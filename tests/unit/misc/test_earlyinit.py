@@ -5,6 +5,7 @@
 """Test qutebrowser.misc.earlyinit."""
 
 import sys
+import traceback
 
 import pytest
 
@@ -33,3 +34,30 @@ def test_qt_version(same):
 def test_qt_version_no_args():
     """Make sure qt_version without arguments at least works."""
     earlyinit.qt_version()
+
+
+def test_check_supported_platform_linux():
+    earlyinit.check_supported_platform('linux')
+
+
+@pytest.mark.parametrize('platform', ['darwin', 'win32', 'freebsd13'])
+def test_check_supported_platform_unsupported(monkeypatch, platform):
+    messages = []
+    monkeypatch.setattr(earlyinit, '_fatal_qt_error', messages.append)
+
+    earlyinit.check_supported_platform(platform)
+
+    assert messages == [earlyinit._unsupported_platform_str(platform)]
+
+
+def test_check_supported_platform_stderr(monkeypatch, capsys):
+    monkeypatch.setattr(earlyinit, 'tkinter', None)
+    monkeypatch.setattr(traceback, 'print_exc', lambda: None)
+    monkeypatch.setattr(sys, 'argv', ['qutebrowser', '--no-err-windows'])
+
+    with pytest.raises(SystemExit):
+        earlyinit.check_supported_platform('darwin')
+
+    out, err = capsys.readouterr()
+    assert out == ''
+    assert err == earlyinit._unsupported_platform_str('darwin') + '\n'

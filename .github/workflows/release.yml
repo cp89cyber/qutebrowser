@@ -150,14 +150,7 @@ jobs:
             return release.id;
           result-encoding: string
   release:
-    strategy:
-      matrix:
-        include:
-          - os: macos-14-large  # Intel
-          - os: macos-14  # Apple Silicon
-          - os: windows-2022
-          - os: ubuntu-24.04
-    runs-on: "${{ matrix.os }}"
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     needs: [prepare]
     permissions:
@@ -171,7 +164,6 @@ jobs:
         with:
           python-version: ${{ inputs.python_version }}
       - name: Import GPG Key
-        if: ${{ startsWith(matrix.os, 'ubuntu-') }}
         run: |
           gpg --import <<< "${{ secrets.QUTEBROWSER_BOT_GPGKEY }}"
       # Needed because of the following import chain:
@@ -183,7 +175,6 @@ jobs:
       # - PyQt6.QtGui
       # Some additional packages are needed for a2x to build manpage
       - name: Install apt dependencies
-        if: ${{ startsWith(matrix.os, 'ubuntu-') }}
         run: |
             sudo apt-get update
             sudo apt-get install --no-install-recommends libegl1 libxml2-utils docbook-xml xsltproc docbook-xsl

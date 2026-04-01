@@ -10,7 +10,6 @@ Only the following releases are done by qutebrowser's maintainer directly:
 
 - Source packages in https://github.com/qutebrowser/qutebrowser/releases[this
   GitHub repository] and on https://pypi.org/project/qutebrowser/#files[PyPI]
-- Windows and macOS prebuilt binaries in the GitHub Releases
 - The `qutebrowser-git` package in the
   https://aur.archlinux.org/packages/qutebrowser-git/[Archlinux AUR]
 - Installing <<tox,in a virtualenv>> from the git repository.
@@ -239,151 +238,6 @@ as `org.qutebrowser.qutebrowser`. See the
 https://github.com/flathub/org.qutebrowser.qutebrowser/wiki[qutebrowser Flatpak documentation]
 for more information about setting up certain features with the Flatpak sandbox.
 
-On FreeBSD
-----------
-
-qutebrowser is in https://www.freshports.org/www/qutebrowser/[FreeBSD ports].
-
-It can be installed with:
-
-----
-# cd /usr/ports/www/qutebrowser
-# make install clean
-----
-
-At present, precompiled packages are not available for this port,
-and QtWebEngine backend is also not available.
-
-On Windows
-----------
-
-NOTE: As an additional resource, see
-https://www.ii.com/installing-qutebrowser-on-windows/[Infinite Ink: Installing
-qutebrowser on Windows].
-
-There are different ways to install qutebrowser on Windows:
-
-Prebuilt binaries
-~~~~~~~~~~~~~~~~~
-
-Prebuilt standalone packages and installers
-https://github.com/qutebrowser/qutebrowser/releases[are built] for every
-release.
-
-Note that you'll need to upgrade to new versions manually (subscribe to the
-https://listi.jpberlin.de/mailman/listinfo/qutebrowser-announce[qutebrowser-announce
-mailinglist] to get notified on new releases). You can install a newer version
-without uninstalling the older one.
-
-The binary release ships with a QtWebEngine built without proprietary codec
-support. To get support for e.g. h264/mp4 videos, you'll need to build
-QtWebEngine from source yourself with support for that enabled.
-
-Nightly builds
-~~~~~~~~~~~~~~
-
-If you want to test out new features before an official qutebrowser release, automated
-https://github.com/qutebrowser/qutebrowser/actions/workflows/nightly.yml[nightly
-builds] are available. To download them, open the latest run (usually the first one),
-then download the archive at the bottom of the page.
-
-Those builds also include variants with debug logging enabled, which can be useful to
-track down issues.
-
-NOTE: Due to GitHub limitations, you need to be signed in with a GitHub account
-to download the files.
-
-Package managers
-~~~~~~~~~~~~~~~~
-
-* PackageManagement PowerShell module
-----
-PS C:\> Install-Package qutebrowser
-----
-* https://chocolatey.org/packages/qutebrowser[Chocolatey package] with `choco`:
-----
-C:\> choco install qutebrowser
-----
-* Scoop's client
-----
-C:\> scoop bucket add extras
-C:\> scoop install qutebrowser
-----
-
-Manual install
-~~~~~~~~~~~~~~
-
-Use the installer from https://www.python.org/downloads[python.org] to get
-Python 3 (be sure to install pip).
-
-Then <<tox,install qutebrowser via virtualenv>>.
-
-On macOS
---------
-
-Prebuilt binary
-~~~~~~~~~~~~~~~
-
-The easiest way to install qutebrowser on macOS is to use the prebuilt `.app`
-files from the
-https://github.com/qutebrowser/qutebrowser/releases[release page].
-
-Note that you'll need to upgrade to new versions manually (subscribe to the
-https://listi.jpberlin.de/mailman/listinfo/qutebrowser-announce[qutebrowser-announce
-mailinglist] to get notified on new releases).
-
-The binary release ships with a QtWebEngine built without proprietary codec
-support. To get support for e.g. h264/mp4 videos, you'll need to build
-QtWebEngine from source yourself with support for that enabled.
-
-NOTE: Currently, qutebrowser
-https://github.com/qutebrowser/qutebrowser/issues/5020[does not use] macOS'
-https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution[Notarization],
-due to https://github.com/pyinstaller/pyinstaller/issues/6612[PyInstaller issues]
-(as well as the requirement to
-https://developer.apple.com/support/compare-memberships/[pay USD 100 per year to Apple]).
-Depending on your system settings, this might lead to errors such as
-"qutebrowser.app can't be opened because Apple cannot check it for malicious
-software." or "can't be opened because it is from an unidentified developer".
-You should be able to open the .app by right-clicking it and selecting "Open", see the
-https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac[macOS documentation]
-for details.
-
-This binary is also available through the https://brew.sh/[Homebrew] package
-manager as a https://github.com/Homebrew/homebrew-cask[cask]:
-
-----
-$ brew install qutebrowser
-----
-
-Nightly builds
-~~~~~~~~~~~~~~
-
-If you want to test out new features before an official qutebrowser release, automated
-https://github.com/qutebrowser/qutebrowser/actions/workflows/nightly.yml[nightly
-builds] are available. To download them, open the latest run (usually the first one),
-then download the archive at the bottom of the page.
-
-Those builds also include variants with debug logging enabled, which can be useful to
-track down issues.
-
-NOTE: Due to GitHub limitations, you need to be signed in with a GitHub account
-to download the files.
-
-Manual Install
-~~~~~~~~~~~~~~
-
-Alternatively, you can install the dependencies via a package manager (like
-https://brew.sh/[Homebrew] or https://www.macports.org/[MacPorts]) and run
-qutebrowser from source.
-
-==== Homebrew
-
-----
-$ brew install pyqt@6
-$ pip3 install qutebrowser
-----
-
 Packagers
 ---------
 
@@ -471,9 +325,6 @@ your local PyQt/Qt install instead of installing PyQt in the virtualenv.
 However, unless you have a new QtWebKit or QtWebEngine available, qutebrowser
 will not work. It also typically means you'll be using an older release of
 QtWebEngine.
-
-On Windows, run `set PYTHON=C:\path\to\python.exe` (CMD) or `$Env:PYTHON =
-"..."` (Powershell) first.
 
 There is a third mode, `scripts/mkvenv.py --pyqt-type source` which uses a
 system-wide Qt but builds PyQt from source. In most scenarios, this shouldn't
