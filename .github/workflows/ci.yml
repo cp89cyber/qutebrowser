@@ -20,10 +20,12 @@ jobs:
       matrix:
         include:
           - testenv: pylint
+            python: '3.13'
           - testenv: flake8
           - testenv: mypy-pyqt6
           - testenv: mypy-pyqt5
           - testenv: docs
+            python: '3.13'
           - testenv: vulture
           - testenv: misc
           - testenv: pyroma
@@ -46,7 +48,7 @@ jobs:
           key: "${{ matrix.testenv }}-${{ hashFiles('misc/requirements/requirements-*.txt') }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('scripts/dev/pylint_checkers/qute_pylint/*.py') }}"
       - uses: actions/setup-python@v6
         with:
-          python-version: '3.10'
+          python-version: "${{ matrix.python || '3.10' }}"
       - uses: actions/setup-node@v6
         with:
           node-version: '22.x'

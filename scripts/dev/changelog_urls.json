@@ -170,8 +170,6 @@
   "twine": "https://twine.readthedocs.io/en/stable/changelog.html",
   "PyJWT": "https://github.com/jpadilla/pyjwt/blob/master/CHANGELOG.rst",
   "rich": "https://github.com/Textualize/rich/blob/master/CHANGELOG.md",
-  "pyobjc-core": "https://pyobjc.readthedocs.io/en/latest/changelog.html",
-  "pyobjc-framework-Cocoa": "https://pyobjc.readthedocs.io/en/latest/changelog.html",
   "trove-classifiers": "https://github.com/pypa/trove-classifiers/commits/main",
   "asciidoc": "https://asciidoc-py.github.io/CHANGELOG.html",
   "pyproject_hooks": "https://pyproject-hooks.readthedocs.io/en/latest/changelog.html",
