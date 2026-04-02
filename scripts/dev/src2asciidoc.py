@@ -97,6 +97,8 @@ class UsageFormatter(argparse.HelpFormatter):
             old_option_strings[action] = action.option_strings[:]
             action.option_strings = ['*{}*'.format(s)
                                      for s in action.option_strings]
+        # Pylint 4 does not resolve this private argparse API correctly.
+        # pylint: disable-next=no-member
         ret = super()._get_actions_usage_parts(actions, groups)
         for action in actions:
             action.option_strings = old_option_strings[action]
