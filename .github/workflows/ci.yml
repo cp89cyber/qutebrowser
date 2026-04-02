@@ -20,10 +20,12 @@ jobs:
       matrix:
         include:
           - testenv: pylint
+            python: '3.13'
           - testenv: flake8
           - testenv: mypy-pyqt6
           - testenv: mypy-pyqt5
           - testenv: docs
+            python: '3.13'
           - testenv: vulture
           - testenv: misc
           - testenv: pyroma
@@ -46,7 +48,7 @@ jobs:
           key: "${{ matrix.testenv }}-${{ hashFiles('misc/requirements/requirements-*.txt') }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('scripts/dev/pylint_checkers/qute_pylint/*.py') }}"
       - uses: actions/setup-python@v6
         with:
-          python-version: '3.10'
+          python-version: "${{ matrix.python || '3.10' }}"
       - uses: actions/setup-node@v6
         with:
           node-version: '22.x'
@@ -198,23 +200,6 @@ jobs:
           - testenv: py314-pyqt610
             os: ubuntu-24.04
             python: "3.14"
-          ### macOS Sonoma (M1 runner)
-          - testenv: py314-pyqt610
-            os: macos-14
-            python: "3.14"
-            args: "tests/unit"  # Only run unit tests on macOS
-          ### macOS Sequoia (Intel runner)
-          - testenv: py314-pyqt610
-            os: macos-15-intel
-            python: "3.14"
-            args: "tests/unit"  # Only run unit tests on macOS
-          ### Windows
-          - testenv: py314-pyqt610
-            os: windows-2022
-            python: "3.14"
-          - testenv: py314-pyqt610
-            os: windows-2025
-            python: "3.14"
     runs-on: "${{ matrix.os }}"
     steps:
       - uses: actions/checkout@v6
@@ -237,22 +222,14 @@ jobs:
         run: |
             sudo apt-get update
             sudo apt-get install --no-install-recommends libyaml-dev libegl1 libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-shape0 libxcb-cursor0 libjpeg-dev
-        if: "startsWith(matrix.os, 'ubuntu-')"
       - name: Install dependencies
         run: |
             python -m pip install -U pip
             python -m pip install -U -r misc/requirements/requirements-tox.txt
-      - name: Upgrade 3rd party assets
-        run: "tox exec -e ${{ matrix.testenv }} -- python scripts/dev/update_3rdparty.py --gh-token ${{ secrets.GITHUB_TOKEN }}"
-        if: "startsWith(matrix.os, 'windows-')"
       - name: "Set TMPDIR for pytest"
         run: 'echo "TMPDIR=${{ runner.temp }}" >> "$GITHUB_ENV"'
       - name: "Run ${{ matrix.testenv }}"
-        run: "dbus-run-session -- tox -e ${{ matrix.testenv }} -- ${{ matrix.args }}"
-        if: "startsWith(matrix.os, 'ubuntu-')"
-      - name: "Run ${{ matrix.testenv }} without DBus"
-        run: "tox -e ${{ matrix.testenv }} -- ${{ matrix.args }}"
-        if: "!startsWith(matrix.os, 'ubuntu-')"
+        run: "dbus-run-session -- tox -e ${{ matrix.testenv }}"
       - name: Analyze backtraces
         run: "bash scripts/dev/ci/backtrace.sh ${{ matrix.testenv }}"
         if: "failure()"

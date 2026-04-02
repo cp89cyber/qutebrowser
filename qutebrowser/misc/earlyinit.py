@@ -20,7 +20,7 @@ import traceback
 import signal
 import importlib
 import datetime
-from typing import NoReturn
+from typing import NoReturn, Optional
 try:
     import tkinter
     import tkinter.messagebox
@@ -36,6 +36,12 @@ from qutebrowser.qt import machinery
 
 
 START_TIME = datetime.datetime.now()
+
+
+def _unsupported_platform_str(platform: str) -> str:
+    """Get an error string for unsupported platforms."""
+    return ("Fatal error: qutebrowser only supports Linux.\n\n"
+            f"Detected platform: {platform}")
 
 
 def _missing_str(name, *, webengine=False):
@@ -135,10 +141,19 @@ def _fatal_qt_error(text: str) -> NoReturn:
         tkinter.messagebox.showerror("qutebrowser: Fatal error!", text)
     else:
         print(text, file=sys.stderr)
-    if '--debug' in sys.argv or '--no-err-windows' in sys.argv:
+    if (('--debug' in sys.argv or '--no-err-windows' in sys.argv) and
+            sys.exc_info()[0] is not None):
         print(file=sys.stderr)
         traceback.print_exc()
     sys.exit(1)
+
+
+def check_supported_platform(platform: Optional[str] = None) -> None:
+    """Ensure qutebrowser is only started on Linux."""
+    platform = sys.platform if platform is None else platform
+    if platform.startswith('linux'):
+        return
+    _fatal_qt_error(_unsupported_platform_str(platform))
 
 
 def check_qt_available(info: machinery.SelectionInfo) -> None:
@@ -327,6 +342,7 @@ def early_init(args):
     Args:
         args: The argparse namespace.
     """
+    check_supported_platform()
     # Init logging as early as possible
     init_log(args)
     # First we initialize the faulthandler as early as possible, so we
