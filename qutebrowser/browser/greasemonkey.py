@@ -181,7 +181,7 @@ class GreasemonkeyScript:
             scriptInfo=self._meta_json(),
             scriptMeta=javascript.string_escape(self.script_meta or ''),
             scriptSource=self._code,
-            use_proxy=use_proxy)
+            use_proxy_literal='true' if use_proxy else 'false')
 
     def _meta_json(self):
         return json.dumps({

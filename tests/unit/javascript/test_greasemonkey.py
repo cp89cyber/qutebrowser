@@ -300,6 +300,28 @@ def test_utf8_bom(gm_manager):
     assert '// ==UserScript==' in script.code().splitlines()
 
 
+@pytest.mark.parametrize("backend, webkit_version, expected_literal", [
+    (usertypes.Backend.QtWebEngine, '999.1', 'true'),
+    (usertypes.Backend.QtWebKit, '602.1', 'false'),
+])
+def test_wrapper_renders_proxy_flag(monkeypatch, backend, webkit_version,
+                                    expected_literal):
+    monkeypatch.setattr(objects, 'backend', backend)
+    monkeypatch.setattr(version, 'qWebKitVersion', lambda: webkit_version)
+
+    script = greasemonkey.GreasemonkeyScript.parse(textwrap.dedent("""
+        // ==UserScript==
+        // @name proxy-flag-test
+        // ==/UserScript==
+        console.log('Hello World');
+    """))
+    rendered = script.code()
+
+    assert f'const _qute_use_proxy = "{expected_literal}" === "true";' in rendered
+    assert '{%' not in rendered
+    assert '%}' not in rendered
+
+
 class TestForceDocumentEnd:
 
     def _get_script(self, *, namespace, name):
